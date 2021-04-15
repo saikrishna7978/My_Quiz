@@ -1,10 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:learning_app10/Header.dart';
 import 'package:learning_app10/Home_Screen1.dart';
 import 'package:learning_app10/colour1.dart';
 import 'package:learning_app10/indianGk.dart';
+import 'package:learning_app10/pdfViewer.dart';
+import 'package:learning_app10/pdf_api.dart';
+import 'package:learning_app10/quizPage.dart';
+import 'package:path_provider/path_provider.dart';
 
+// import 'package:permission_handler/permission_handler.dart';
 
 class WorldGk extends StatefulWidget {
   @override
@@ -12,10 +20,42 @@ class WorldGk extends StatefulWidget {
 }
 
 class _WorldGkState extends State<WorldGk> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  // String urlPDFPath = "";
+
+  // @override
+  // void initState() {
+  //   // requestPersmission();
+  //   getFileFromUrl("http://www.pdf995.com/samples/pdf.pdf?q={http}").then((f) {
+  //     setState(() {
+  //       urlPDFPath = f.path;
+  //       print(urlPDFPath);
+  //     });
+  //   });
+  //   super.initState();
+  // }
+
+  // Future<File> getFileFromUrl(String url, {name}) async {
+  //   var fileName = 'testonline';
+  //   if (name != null) {
+  //     fileName = name;
+  //   }
+  //   try {
+  //     var data = await http.get(Uri.parse(url));
+  //     print(data);
+  //     var bytes = data.bodyBytes;
+  //     var dir = await getApplicationDocumentsDirectory();
+  //     File file = File("${dir.path}/" + fileName + ".pdf");
+  //     print(dir.path);
+  //     File urlFile = await file.writeAsBytes(bytes);
+  //     return urlFile;
+  //   } catch (e) {
+  //     throw Exception("Error opening url file");
+  //   }
+  // }
+
+  // void requestPersmission() async {
+  //   await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+  // }
 
   @override
   void dispose() {
@@ -136,16 +176,33 @@ class _WorldGkState extends State<WorldGk> {
                                         height: 85,
                                       ),
                                     ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        PageRouteBuilder(
-                                          pageBuilder: (_, __, ___) =>
-                                              HomePage1(),
-                                          transitionDuration:
-                                              Duration(seconds: 0),
-                                        ),
-                                      );
+                                    onPressed: () async {
+                                      final url = 'rule.pdf';
+                                      final file =
+                                          await PDFApi.loadFirebase(url);
+
+                                      if (file == null) return;
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PDFViewerPage(file: file)));
+                                      // if (urlPDFPath != null) {
+                                      //   Navigator.push(
+                                      //       context,
+                                      //       MaterialPageRoute(
+                                      //           builder: (context) =>
+                                      //               PdfViewPage(
+                                      //                   path: urlPDFPath)));
+                                      // }
+                                      // Navigator.push(
+                                      //   context,
+                                      //   PageRouteBuilder(
+                                      //     pageBuilder: (_, __, ___) =>
+                                      //         HomePage1(),
+                                      //     transitionDuration:
+                                      //         Duration(seconds: 0),
+                                      //   ),
+                                      // );
                                     },
                                   ),
                                 )
@@ -475,7 +532,7 @@ class _WorldGkState extends State<WorldGk> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => IndianGk()),
+                                              builder: (context) => QuizPage()),
                                         );
                                       },
                                     ),
